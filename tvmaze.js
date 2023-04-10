@@ -15,14 +15,16 @@ const $term = $("search-form").val()
 
 async function getShowsByTerm() {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
-const shows = await axios.get("https://api.tvmaze.com/search/shows?q=:query",{params:{$term}});
-console.log(shows);
-for (let show of shows.data){
+const results = await axios.get("https://api.tvmaze.com/search/shows?q=:query",{params:{$term}});
+//console.log(results);
+const shows = results.data;
+console.log(shows)
+for (let show of shows){
 return {
-    id: shows.data.show.id,
-    name: shows.data.show.name,
-    summary: shows.data.show.summary,
-    image: shows.data.show.image.medium ? shows.data.show.image.medium : 'http://tinyurl.com/missing-tv',
+    id: show.show.id,
+    name: show.show.name,
+    summary: show.show.summary,
+    image: show.show.image.medium ? show.show.image.medium : 'http://tinyurl.com/missing-tv',
 }
   }
 }
@@ -35,15 +37,15 @@ function populateShows(shows) {
 
   for (let show of shows) {
     const $show = $(
-        `<div data-show-id="${shows.data.show.id}" class="Show col-md-12 col-lg-6 mb-4">
+        `<div data-show-id="${show.show.id}" class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img 
-              src= "${shows.data.show.image.medium}"
-              alt="${shows.data.show.name}"
+              src= "${show.show.image.medium}"
+              alt="${show.show.name}"
               class="card-img-top">
            <div class="media-body">
-             <h5 class="text-primary">${shows.data.show.name}</h5>
-             <div><small>${shows.data.show.summary}</small></div>
+             <h5 class="text-primary">${show.show.name}</h5>
+             <div><small>${show.show.summary}</small></div>
              <button class="btn btn-outline-light btn-sm Show-getEpisodes">
                Episodes
              </button>
@@ -53,7 +55,7 @@ function populateShows(shows) {
       `);
 
     $showsList.append($show);  }
-}
+    }
 
 
 /** Handle search form submission: get shows from API and display.
