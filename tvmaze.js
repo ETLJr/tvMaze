@@ -3,7 +3,7 @@
 const $showsList = $("#shows-list");
 const $episodesArea = $("#episodes-area");
 const $searchForm = $("#search-form");
-const $term = $("#search-form").val()
+const $term = $("search-form").val()
 
 
 /** Given a search term, search for tv shows that match that query.
@@ -15,15 +15,16 @@ const $term = $("#search-form").val()
 
 async function getShowsByTerm() {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
-const shows = await axios.get("https://api.tvmaze.com/search/shows?q=:query",{params:{$term}})
-console.log(shows)
+const shows = await axios.get("https://api.tvmaze.com/search/shows?q=:query",{params:{$term}});
+console.log(shows);
+for (let show of shows.data){
 return {
     id: shows.data.show.id,
     name: shows.data.show.name,
     summary: shows.data.show.summary,
     image: shows.data.show.image.medium ? shows.data.show.image.medium : 'http://tinyurl.com/missing-tv',
 }
-  
+  }
 }
 
 
@@ -39,7 +40,7 @@ function populateShows(shows) {
            <img 
               src= "${shows.data.show.image.medium}"
               alt="${shows.data.show.name}"
-              class="w-25 mr-3">
+              class="card-img-top">
            <div class="media-body">
              <h5 class="text-primary">${shows.data.show.name}</h5>
              <div><small>${shows.data.show.summary}</small></div>
@@ -60,8 +61,8 @@ function populateShows(shows) {
  */
 
 async function searchForShowAndDisplay() {
-  const term = $("#searchForm-term").val();
-  const shows = await getShowsByTerm(term);
+  //const term = $("#searchForm-term").val();
+  const shows = await getShowsByTerm($term);
 
   $episodesArea.hide();
   populateShows(shows);
