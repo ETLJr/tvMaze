@@ -3,7 +3,6 @@
 const $showsList = $("#shows-list");
 const $episodesArea = $("#episodes-area");
 const $searchForm = $("#search-form");
-const $term = $("search-form").val()
 
 
 /** Given a search term, search for tv shows that match that query.
@@ -13,16 +12,16 @@ const $term = $("search-form").val()
  *    (if no image URL given by API, put in a default image URL)
  */
 
- async function getShowsByTerm() {
+ async function getShowsByTerm(term) {
     // ADD: Remove placeholder & make request to TVMaze search shows API.
-  const results = await axios.get("https://api.tvmaze.com/search/shows?q=:query",{params:{$term}});
+  const results = await axios.get(`https://api.tvmaze.com/search/shows?q=${term}`);
   const shows = results.data;
   const showObjects = shows.map((show) => {
     return {
       id: show.show.id,
       name: show.show.name,
       summary: show.show.summary,
-      image: show.show.image.medium ? show.show.image.medium : 'http://tinyurl.com/missing-tv',
+      image: show.show.image ? show.show.image : 'http://tinyurl.com/missing-tv',
     }
   });
   return showObjects;
@@ -61,7 +60,7 @@ const $term = $("search-form").val()
  *    Hide episodes area (that only gets shown if they ask for episodes)
  */
 
-async function searchForShowAndDisplay() {
+async function searchForShowAndDisplay($term) {
   const shows = await getShowsByTerm($term);
 
   $episodesArea.hide();
