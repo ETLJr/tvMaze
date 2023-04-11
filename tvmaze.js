@@ -62,7 +62,6 @@ const $term = $("search-form").val()
  */
 
 async function searchForShowAndDisplay() {
-  //const term = $("#searchForm-term").val();
   const shows = await getShowsByTerm($term);
 
   $episodesArea.hide();
@@ -71,14 +70,15 @@ async function searchForShowAndDisplay() {
 
 $searchForm.on("submit", async function (evt) {
   evt.preventDefault();
-  await searchForShowAndDisplay();
+  const $term = $("#search-query").val()
+  await searchForShowAndDisplay($term);
 });
 
 
-// /** Given a show ID, get from API and return (promise) array of episodes:
-//  *      { id, name, season, number }
-//  */
-//  const id = show.show.id
+/** Given a show ID, get from API and return (promise) array of episodes:
+ *      { id, name, season, number }
+ */
+ 
 //  async function getEpisodesOfShow(id) {
 //     const episodesResults = await axios.get(`"https://api.tvmaze.com/shows/${id}/episodes"`);
 //     console.log(episodesResults)}
@@ -87,8 +87,8 @@ $searchForm.on("submit", async function (evt) {
 
 
 
-// //  })
-// // }
-// /** Write a clear docstring for this function... */
+//  })
+// }
+/** Write a clear docstring for this function... */
 
-// // function populateEpisodes(episodes) { }
+// function populateEpisodes(episodes) { }
