@@ -12,9 +12,9 @@ const $searchForm = $("#search-form");
  *    (if no image URL given by API, put in a default image URL)
  */
 
- async function getShowsByTerm(term) {
+ async function getShowsByTerm($term) {
     // ADD: Remove placeholder & make request to TVMaze search shows API.
-  const results = await axios.get(`https://api.tvmaze.com/search/shows?q=${term}`);
+  const results = await axios.get(`https://api.tvmaze.com/search/shows?q=${$term}`);
   const shows = results.data;
   const showObjects = shows.map((show) => {
     return {
