@@ -15,7 +15,7 @@ const $searchForm = $("#search-form");
  async function getShowsByTerm($term) {
     // ADD: Remove placeholder & make request to TVMaze search shows API.
   const results = await axios.get(`https://api.tvmaze.com/search/shows?q=${$term}`);
-  console.log(results)
+//   console.log(results)
   const shows = results.data;
   const showObjects = shows.map((show) => {
      
@@ -46,7 +46,7 @@ const $searchForm = $("#search-form");
            <div class="media-body">
              <h5 class="text-primary">${show.name}</h5>
              <div><small>${show.summary}</small></div>
-             <button class="btn btn-outline-dark btn-sm Show-getEpisodes data-show-id="${show.id} btn-for-${show.id}">
+             <button class="btn btn-outline-dark btn-sm Show-getEpisodes" data-show-id="${show.id}">
                Episodes
              </button>
            </div>
@@ -82,9 +82,8 @@ $searchForm.on("submit", async function (evt) {
  
  async function getEpisodesOfShow(id) {
     const episodesResults = await axios.get(`https://api.tvmaze.com/shows/${id}/episodes`);
-    console.log(episodesResults)
-    episodes = episodesResults.data
-     const episodeObject = episodes.map((episode) => {
+    // console.log(episodesResults)
+     const episodeObject = episodesResults.data.map((episode) => {
         return {
             id: episode.id,
             name: episode.name,    
@@ -108,7 +107,7 @@ function populateEpisodes(episodes) {
 }
 
 $showsList.on("click", async function(e){
-const $showID = $(e.target.data("show-id"));
+const $showID = $(e.target).data("show-id");
 const episodes= await getEpisodesOfShow($showID);
 populateEpisodes(episodes)
 })
