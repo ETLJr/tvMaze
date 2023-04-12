@@ -15,13 +15,15 @@ const $searchForm = $("#search-form");
  async function getShowsByTerm($term) {
     // ADD: Remove placeholder & make request to TVMaze search shows API.
   const results = await axios.get(`https://api.tvmaze.com/search/shows?q=${$term}`);
+  console.log(results)
   const shows = results.data;
   const showObjects = shows.map((show) => {
+     
     return {
       id: show.show.id,
       name: show.show.name,
       summary: show.show.summary,
-      image: show.show.image ? show.show.image : 'http://tinyurl.com/missing-tv',
+      image: show.show.image ? show.show.image : {medium:"http://tinyurl.com/missing-tv"},
     }
   });
   return showObjects;
@@ -35,7 +37,7 @@ const $searchForm = $("#search-form");
   
       for (let show of shows) {
     const $show = $(
-        `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
+        `<div data-show-id="${show.id}" id="${show.id}"  class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img 
               src= "${show.image.medium}"
@@ -44,7 +46,7 @@ const $searchForm = $("#search-form");
            <div class="media-body">
              <h5 class="text-primary">${show.name}</h5>
              <div><small>${show.summary}</small></div>
-             <button class="btn btn-outline-light btn-sm Show-getEpisodes">
+             <button class="btn btn-outline-dark btn-sm Show-getEpisodes data-show-id="${show.id} btn-for-${show.id}">
                Episodes
              </button>
            </div>
@@ -78,16 +80,35 @@ $searchForm.on("submit", async function (evt) {
  *      { id, name, season, number }
  */
  
-//  async function getEpisodesOfShow(id) {
-//     const episodesResults = await axios.get(`"https://api.tvmaze.com/shows/${id}/episodes"`);
-//     console.log(episodesResults)}
-// //     //const episodeObjects = episodesResults.map((show) => {
-// //         return {
-
-
-
-//  })
-// }
+ async function getEpisodesOfShow(id) {
+    const episodesResults = await axios.get(`https://api.tvmaze.com/shows/${id}/episodes`);
+    console.log(episodesResults)
+    episodes = episodesResults.data
+     const episodeObject = episodes.map((episode) => {
+        return {
+            id: episode.id,
+            name: episode.name,    
+            season: episode.season,
+            number: episode.number,
+        }
+        })
+     return episodeObject
+    }
 /** Write a clear docstring for this function... */
 
-// function populateEpisodes(episodes) { }
+function populateEpisodes(episodes) { 
+    const $episodeList = $("#episodes-list")
+
+    for ( let episode of episodes){
+        const $li = $(
+         `<li>${episode.name}. Season ${episode.season}, Episode Num.${episode.number}</li>`);
+         $episodeList.append($li);
+         }
+         $("#episode-area").show()
+}
+
+$showsList.on("click", async function(e){
+const $showID = $(e.target.data("show-id"));
+const episodes= await getEpisodesOfShow($showID);
+populateEpisodes(episodes)
+})
